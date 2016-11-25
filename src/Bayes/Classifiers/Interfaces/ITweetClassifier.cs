@@ -1,6 +1,6 @@
 ﻿using Bayes.Data;
 
-namespace Bayes.Classifier.Interface
+namespace Bayes.Classifiers.Interfaces
 {
     public interface ITweetClassifier : IClassifier<Analysis, string>
     {

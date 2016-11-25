@@ -1,6 +1,4 @@
-﻿using Bayes.Data;
-
-namespace Bayes.Classifier.Interface
+﻿namespace Bayes.Classifiers.Interfaces
 {
     public interface IClassifier<in TIn, out TOut>
     {
