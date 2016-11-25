@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Bayes.Data;
 using Xunit;
 using FluentAssertions;
 
 namespace Bayes.Tests.Model
 {
-    public class PredicatorTests
+    public class ProbabilityTests
     {
         [Fact]
         public void Count_Pobability_When_All_Words_Are_Negative()
