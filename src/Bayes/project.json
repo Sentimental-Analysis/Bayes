@@ -3,12 +3,16 @@
   "buildOptions": {
     "debugType": "portable"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "frameworks": {
     "netstandard1.6": {
       "dependencies": {
         "NETStandard.Library": "1.6.1"
       }
     }
+  },
+  "tooling": {
+    "defaultNamespace": "Bayes"
   }
 }
