@@ -1,25 +1,12 @@
-﻿using System.Collections.Immutable;
-using System.Linq;
-
-namespace Bayes.Data
+﻿namespace Bayes.Data
 {
     public struct Probability
     {
-        public double NegativeProbability { get; }
-        public double PositiveProbability { get; }
+        public double Value { get; }
 
-        public Probability(double negativeProbability, double positiveProbability)
+        public Probability(double value)
         {
-            NegativeProbability = negativeProbability;
-            PositiveProbability = positiveProbability;
-        }
-
-        public static Probability Count(ImmutableDictionary<string, int> words)
-        {
-            var all = words.Count + 0.0;
-            var negative = words.Count(x => x.Value < 0);
-            var positive = all - negative;
-            return new Probability(negative / all, positive / all);
+            Value = value;
         }
     }
 }
