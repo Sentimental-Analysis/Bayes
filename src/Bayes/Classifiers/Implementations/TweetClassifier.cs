@@ -1,4 +1,5 @@
-﻿using Bayes.Classifiers.Interfaces;
+﻿using System.Collections.Generic;
+using Bayes.Classifiers.Interfaces;
 using Bayes.Data;
 
 namespace Bayes.Classifiers.Implementations
@@ -15,7 +16,9 @@ namespace Bayes.Classifiers.Implementations
 
         public Score Classify(string source)
         {
-            throw new System.NotImplementedException();
+            var probabilities = new SortedSet<Classification>();
+            var categories = _analysisResult.TotalCategory.Keys;
+            return null;
         }
     }
 }
