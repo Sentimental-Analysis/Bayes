@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 using System.Linq;
 
 namespace Bayes.Data
@@ -14,7 +14,7 @@ namespace Bayes.Data
             PositiveProbability = positiveProbability;
         }
 
-        public static Probability Count(Dictionary<string, int> words)
+        public static Probability Count(ImmutableDictionary<string, int> words)
         {
             var all = words.Count + 0.0;
             var negative = words.Count(x => x.Value < 0);
