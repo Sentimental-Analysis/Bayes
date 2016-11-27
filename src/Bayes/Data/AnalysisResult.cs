@@ -1,6 +1,6 @@
 ﻿namespace Bayes.Data
 {
-    public class Analysis
+    public class AnalysisResult
     {
         public string Sentence { get; set; }
         public Score[] Words { get; set; }
