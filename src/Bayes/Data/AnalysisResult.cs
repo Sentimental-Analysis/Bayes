@@ -60,7 +60,17 @@ namespace Bayes.Data
 
         public AnalysisResult IncrementCategory(Category category)
         {
-            return null;
+            var totalCategory = TotalCategory;
+            int count;
+            if (totalCategory.TryGetValue(category, out count))
+            {
+                totalCategory = totalCategory.SetItem(category, count + 1);
+            }
+            else
+            {
+                totalCategory = totalCategory.Add(category, 1);
+            }
+            return new AnalysisResult(TotalFeature, totalCategory, FeatureByCategory);
         }
     }
 }
