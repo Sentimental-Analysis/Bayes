@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Bayes.Data
 {
@@ -23,6 +25,22 @@ namespace Bayes.Data
 
         public AnalysisResult IncrementFeature(Category category, string feature)
         {
+            var totalFeature = TotalFeature.ToBuilder();
+            var totalCategory = TotalCategory.ToBuilder();
+            var featureByCategory = FeatureByCategory.ToBuilder();
+            ImmutableDictionary<string, int> features;
+            if (!FeatureByCategory.TryGetValue(category, out features))
+            {
+                features = ImmutableDictionary<string, int>.Empty;
+            }
+
+            int count;
+            if (!features.TryGetValue(feature, out count))
+            {
+                count = 0;
+            }
+
+
             return null;
         }
 
