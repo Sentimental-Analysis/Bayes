@@ -42,7 +42,7 @@ namespace Bayes.Data
             }
             else
             {
-                featureByCategory.Add(category, new Dictionary<string, int>() { {feature, 1} }.ToImmutableDictionary());
+                featureByCategory = featureByCategory.Add(category, new Dictionary<string, int>() { {feature, 1} }.ToImmutableDictionary());
             }
 
             int totalCount;
