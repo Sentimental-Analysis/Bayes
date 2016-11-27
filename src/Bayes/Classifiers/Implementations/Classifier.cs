@@ -3,14 +3,14 @@ using Bayes.Data;
 
 namespace Bayes.Classifiers.Implementations
 {
-    public class TweetClassifier : IClassifier<string, Score>
+    public abstract class Classifier<TIn, TOut> : IClassifier<TIn, TOut>
     {
-        public Score Classify(string source)
+        public TOut Classify(TIn source)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Learn(Category category, string source)
+        public void Learn(Category category, TIn source)
         {
             throw new System.NotImplementedException();
         }
