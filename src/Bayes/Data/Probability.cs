@@ -8,5 +8,7 @@
         {
             Value = value;
         }
+
+        public static implicit operator Probability(double value) => new Probability(value);
     }
 }
