@@ -16,15 +16,19 @@ namespace Bayes.Data
         public ImmutableDictionary<Category, ImmutableDictionary<string, int>> FeatureByCategory { get; }
 
 
-
         public static AnalysisResult Empty()
         {
             return new AnalysisResult(ImmutableDictionary<string, int>.Empty, ImmutableDictionary<Category, int>.Empty, ImmutableDictionary<Category, ImmutableDictionary<string, int>>.Empty);
         }
 
-        public static AnalysisResult Increment(Category category, string feature)
+        public static AnalysisResult IncrementFeature(Category category, string feature)
         {
             return null;
-        } 
+        }
+
+        public static AnalysisResult IncrementCategory(Category category)
+        {
+            return null;
+        }
     }
 }

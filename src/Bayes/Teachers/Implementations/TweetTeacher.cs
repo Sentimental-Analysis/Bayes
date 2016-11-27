@@ -7,7 +7,9 @@ namespace Bayes.Teachers.Implementations
     {
         public AnalysisResult Learn(Classification source)
         {
-            throw new System.NotImplementedException();
+            var result = AnalysisResult.Empty();
+            result = source.Words.
+
         }
     }
 }

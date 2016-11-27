@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Bayes.Utils;
 
 namespace Bayes.Data
 {
@@ -20,6 +21,13 @@ namespace Bayes.Data
             Probability = 1.0;
             Category = category;
             Words = words;
+        }
+
+        public Classification(Category category, string sentence)
+        {
+            Probability = 1.0;
+            Category = category;
+            Words = sentence.Tokenize();
         }
     }
 }
