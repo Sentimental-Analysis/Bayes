@@ -5,17 +5,16 @@ namespace Bayes.Data
 {
     public class AnalysisResult
     {
+        public ImmutableDictionary<string, int> TotalFeature { get; }
+        public ImmutableDictionary<Category, int> TotalCategory { get; }
+        public ImmutableDictionary<Category, ImmutableDictionary<string, int>> FeatureByCategory { get; }
+
         public AnalysisResult(ImmutableDictionary<string, int> totalFeature, ImmutableDictionary<Category, int> totalCategory, ImmutableDictionary<Category, ImmutableDictionary<string, int>> featureByCategory)
         {
             TotalFeature = totalFeature;
             TotalCategory = totalCategory;
             FeatureByCategory = featureByCategory;
         }
-
-        public ImmutableDictionary<string, int> TotalFeature { get; }
-        public ImmutableDictionary<Category, int> TotalCategory { get; }
-        public ImmutableDictionary<Category, ImmutableDictionary<string, int>> FeatureByCategory { get; }
-
 
         public static AnalysisResult Empty()
         {
@@ -71,6 +70,21 @@ namespace Bayes.Data
                 totalCategory = totalCategory.Add(category, 1);
             }
             return new AnalysisResult(TotalFeature, totalCategory, FeatureByCategory);
+        }
+
+        public int CountFeatureInCategory(string feature, Category category)
+        {
+            ImmutableDictionary<string, int> features;
+            if (FeatureByCategory.TryGetValue(category, out features))
+            {
+                int count;
+                if (features.TryGetValue(feature, out count))
+                {
+                    return count;
+                }
+                return 0;
+            }
+            return 0;
         }
     }
 }
