@@ -17,11 +17,7 @@ namespace Bayes.Utils
             return words.Aggregate(ImmutableDictionary<string, int>.Empty, (acc, x) =>
             {
                 int freq;
-                if (acc.TryGetValue(x, out freq))
-                {
-                    return acc.SetItem(x, freq + 1);
-                }
-                return acc.Add(x, 1);
+                return acc.TryGetValue(x, out freq) ? acc.SetItem(x, freq + 1) : acc.Add(x, 1);
             });
         }
     }
