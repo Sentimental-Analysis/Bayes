@@ -10,5 +10,6 @@
         }
 
         public static implicit operator Probability(double value) => new Probability(value);
+        public static implicit operator double(Probability probability) => probability.Value;
     }
 }
