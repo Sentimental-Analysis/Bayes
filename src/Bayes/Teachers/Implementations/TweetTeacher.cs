@@ -11,7 +11,6 @@ namespace Bayes.Teachers.Implementations
             var result = source.Words.Aggregate(oldResult, (acc, x) => acc.IncrementFeature(source.Category, x));
             result = result.IncrementCategory(source.Category);
             return result;
-
         }
     }
 }
