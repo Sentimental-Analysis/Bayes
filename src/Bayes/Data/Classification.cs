@@ -23,6 +23,13 @@ namespace Bayes.Data
             Words = words;
         }
 
+        public Classification(Probability probability, Category category, string sentence)
+        {
+            Probability = probability;
+            Category = category;
+            Words = sentence.Tokenize();
+        }
+
         public Classification(Category category, string sentence)
         {
             Probability = 1.0;
