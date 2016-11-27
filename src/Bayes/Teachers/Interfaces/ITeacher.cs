@@ -1,7 +1,8 @@
-﻿namespace Bayes.Teachers.Interfaces
+﻿
+namespace Bayes.Teachers.Interfaces
 {
-    public interface ITeacher<in TIn, out TOut>
+    public interface ITeacher<TIn, TOut>
     {
-        TOut Learn(TIn source);
+        TOut Learn(TOut oldResult, TIn source);
     }
 }

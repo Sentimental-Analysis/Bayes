@@ -21,12 +21,12 @@ namespace Bayes.Data
             return new AnalysisResult(ImmutableDictionary<string, int>.Empty, ImmutableDictionary<Category, int>.Empty, ImmutableDictionary<Category, ImmutableDictionary<string, int>>.Empty);
         }
 
-        public static AnalysisResult IncrementFeature(Category category, string feature)
+        public AnalysisResult IncrementFeature(Category category, string feature)
         {
             return null;
         }
 
-        public static AnalysisResult IncrementCategory(Category category)
+        public AnalysisResult IncrementCategory(Category category)
         {
             return null;
         }
