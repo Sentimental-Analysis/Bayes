@@ -9,10 +9,5 @@ namespace Bayes.Classifiers.Implementations
         {
             throw new System.NotImplementedException();
         }
-
-        public void Learn(Category category, string source)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
