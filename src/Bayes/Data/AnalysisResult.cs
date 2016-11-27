@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace Bayes.Data
 {
@@ -25,23 +24,38 @@ namespace Bayes.Data
 
         public AnalysisResult IncrementFeature(Category category, string feature)
         {
-            var totalFeature = TotalFeature.ToBuilder();
-            var totalCategory = TotalCategory.ToBuilder();
-            var featureByCategory = FeatureByCategory.ToBuilder();
+            var totalFeature = TotalFeature;
+            var featureByCategory = FeatureByCategory;
             ImmutableDictionary<string, int> features;
-            if (!FeatureByCategory.TryGetValue(category, out features))
+            if (featureByCategory.TryGetValue(category, out features))
             {
-                features = ImmutableDictionary<string, int>.Empty;
+                int count;
+                if (features.TryGetValue(feature, out count))
+                {
+                    features = features.SetItem(feature, count + 1);
+                }
+                else
+                {
+                    features = features.Add(feature, 1);
+                }
+                featureByCategory = featureByCategory.SetItem(category, features);
+            }
+            else
+            {
+                featureByCategory.Add(category, new Dictionary<string, int>() { {feature, 1} }.ToImmutableDictionary());
             }
 
-            int count;
-            if (!features.TryGetValue(feature, out count))
+            int totalCount;
+            if (totalFeature.TryGetValue(feature, out totalCount))
             {
-                count = 0;
+                totalFeature = totalFeature.SetItem(feature, totalCount + 1);
+            }
+            else
+            {
+                totalFeature = totalFeature.Add(feature, 1);
             }
 
-
-            return null;
+            return new AnalysisResult(totalFeature, TotalCategory, featureByCategory);
         }
 
         public AnalysisResult IncrementCategory(Category category)
