@@ -1,7 +1,7 @@
 ﻿namespace Bayes.Learner.Interfaces
 {
-    public interface ILearner<out TResult, in TLearn>
+    public interface ILearner<TState, in TLearn>
     {
-        TResult Learn(TLearn source);
+        TState Learn(TState oldState, TLearn source);
     }
 }
