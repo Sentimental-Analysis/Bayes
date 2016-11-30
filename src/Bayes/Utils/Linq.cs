@@ -15,7 +15,7 @@ namespace Bayes.Utils
             }
             if (selector == null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(selector));
             }
 
             using (var sourceIterator = source.GetEnumerator())
