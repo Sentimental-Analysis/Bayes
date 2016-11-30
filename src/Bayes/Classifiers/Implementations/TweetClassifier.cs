@@ -44,7 +44,7 @@ namespace Bayes.Classifiers.Implementations
                 }
                 return Tuple.Create(apriori.Key, new Probability(-1));
             });
-            return new Sentence(parameter, res.MaxBy(x => x.Item2).Item1);
+            return new Sentence(parameter, res.MaxBy(x => x.Item2.Value).Item1);
         }
 
 

@@ -9,8 +9,11 @@ namespace Bayes.Learner.Implementations
     {
         public LearnerState Learn(LearnerState oldState, Sentence source)
         {
-            var result = source.Text.Tokenize().Aggregate(oldState, (acc, x) => acc.IncrementFeature(source.Category, x));
-            result = result.IncrementCategory(source.Category);
+            var result = source.Text.Tokenize().Aggregate(oldState, (acc, x) =>
+            {
+                var newAcc = acc.IncrementFeature(source.Category, x);
+                return newAcc.IncrementCategory(source.Category);
+            });        
             return result;
         }
     }
