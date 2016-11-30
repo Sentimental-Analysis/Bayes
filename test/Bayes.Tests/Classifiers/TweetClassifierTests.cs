@@ -32,20 +32,33 @@ namespace Bayes.Tests.Classifiers
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
             var classifier = new TweetClassifier(testLearner);
             var testResult = classifier.Classify("My brother love F#");
-            testResult.Category.Should().Be(WordCategory.Negative);
+            testResult.Category.Should().Be(WordCategory.Positive);
         }
 
         [Fact]
-        public void Test_Classifier_When_Text_Is_Neutral()
+        public void Test_Classifier_When_Text_Is_Positive2()
         {
-            var positiveText = "I love F#";
-            var negativeText = "I hate java";
+            var positiveText = "I love sunny days";
+            var negativeText = "I hate rain";
             var learner = new TweetLearner();
             var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
             var classifier = new TweetClassifier(testLearner);
-            var testResult = classifier.Classify("My brother love java");
+            var testResult = classifier.Classify("today is a sunny day");
             testResult.Category.Should().Be(WordCategory.Positive);
+        }
+
+        [Fact]
+        public void Test_Classifier_When_Text_Is_Negative2()
+        {
+            var positiveText = "I love sunny days";
+            var negativeText = "I hate rain";
+            var learner = new TweetLearner();
+            var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
+            var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
+            var classifier = new TweetClassifier(testLearner);
+            var testResult = classifier.Classify("there will be rain");
+            testResult.Category.Should().Be(WordCategory.Negative);
         }
     }
 }

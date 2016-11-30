@@ -32,17 +32,17 @@ namespace Bayes.Classifiers.Implementations
                 {
                     double probability = 0.0;
                     Probability aprioriProbabilityValue;
-                    if (aprioriProbability.TryGetValue(WordCategory.Positive, out aprioriProbabilityValue))
+                    if (aprioriProbability.TryGetValue(apriori.Key, out aprioriProbabilityValue))
                     {
                         Probability prioriProbabilityValue;
-                        if (prioriProbability.TryGetValue(WordCategory.Positive, out prioriProbabilityValue))
+                        if (prioriProbability.TryGetValue(apriori.Key, out prioriProbabilityValue))
                         {
                             probability = (aprioriProbabilityValue * prioriProbabilityValue).Value;
                         }
                     }
                     return Tuple.Create(apriori.Key, new Probability(probability));
                 }
-                return Tuple.Create(apriori.Key, new Probability(-1));
+                return Tuple.Create(apriori.Key, new Probability(-1d));
             });
             return new Sentence(parameter, res.MaxBy(x => x.Item2.Value).Item1);
         }
@@ -50,12 +50,12 @@ namespace Bayes.Classifiers.Implementations
 
         public ImmutableDictionary<WordCategory, Probability> GetPrioriProbability(IEnumerable<WordCategory> categories, IEnumerable<string> words, int quantity)
         {
-            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(categories, word, quantity)).Where(x => Math.Abs(x.Value) < Epsilon).ToList();
+            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(categories, word, quantity)).Where(x => !(Math.Abs(x.Value) < Epsilon)).ToList();
             return categories.Select(category =>
             {
                 var res = prob.Where(x => x.Key == category)
                     .Aggregate(new Probability(1.0d), (acc, x) => x.Value * acc);
-                return new KeyValuePair<WordCategory, Probability>(category, res);
+                return new KeyValuePair<WordCategory, Probability>(category, new Probability(Math.Abs(res.Value - 1.0d) < Epsilon ? 0.0d : res.Value));
             }).ToImmutableDictionary();
         }
         public IEnumerable<KeyValuePair<WordCategory, Probability>> GetPrioriProbabilityForSingleWord(IEnumerable<WordCategory> categories,  string word, int quantity)
