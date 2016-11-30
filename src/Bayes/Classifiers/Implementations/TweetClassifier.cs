@@ -9,7 +9,7 @@ using static System.Double;
 
 namespace Bayes.Classifiers.Implementations
 {
-    public class TweetClassifier : IClassifier<Sentence, string>
+    public class TweetClassifier : IClassifier<Score, string>
     {
         private readonly LearnerState _learnerState;
 
@@ -18,7 +18,7 @@ namespace Bayes.Classifiers.Implementations
             _learnerState = learnerState;
         }
 
-        public Sentence Classify(string parameter)
+        public Score Classify(string parameter)
         {
             var words = parameter.Tokenize();
             int allElementsQuantity = _learnerState.CategoryPerQuantity.Select(x => x.Value).Sum();
@@ -43,8 +43,8 @@ namespace Bayes.Classifiers.Implementations
                     return Tuple.Create(apriori.Key, new Probability(probability));
                 }
                 return Tuple.Create(apriori.Key, new Probability(-1d));
-            });
-            return new Sentence(parameter, res.MaxBy(x => x.Item2.Value).Item1);
+            }).MaxBy(x => x.Item2.Value);
+            return new Score(new Sentence(parameter, res.Item1), res.Item2);
         }
 
 
