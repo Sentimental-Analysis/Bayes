@@ -22,47 +22,44 @@ namespace Bayes.Classifiers.Implementations
         {
             var words = parameter.Tokenize();
             int allElementsQuantity = _learnerState.CategoryPerQuantity.Select(x => x.Value).Sum();
-            var aprioriProbability = GetAprioriProbability(allElementsQuantity);
-            var prioriProbability = GetPrioriProbability(words, allElementsQuantity);
+            var keys = _learnerState.CategoryPerQuantity.Keys.ToList();
+            var aprioriProbability = GetAprioriProbability(keys, allElementsQuantity);
+            var prioriProbability = GetPrioriProbability(keys, words, allElementsQuantity);
 
-            double positiveProbability = 0.0;
-            Probability positiveAprioriProbability;
-            if (aprioriProbability.TryGetValue(WordCategory.Positive, out positiveAprioriProbability))
+            var res = aprioriProbability.Zip(prioriProbability, (apriori, priori) =>
             {
-                Probability positivePrioriProbability;
-                if (prioriProbability.TryGetValue(WordCategory.Positive, out positivePrioriProbability))
+                if (apriori.Key == priori.Key)
                 {
-                    positiveProbability = (positiveAprioriProbability * positivePrioriProbability).Value;
+                    double probability = 0.0;
+                    Probability aprioriProbabilityValue;
+                    if (aprioriProbability.TryGetValue(WordCategory.Positive, out aprioriProbabilityValue))
+                    {
+                        Probability prioriProbabilityValue;
+                        if (prioriProbability.TryGetValue(WordCategory.Positive, out prioriProbabilityValue))
+                        {
+                            probability = (aprioriProbabilityValue * prioriProbabilityValue).Value;
+                        }
+                    }
+                    return Tuple.Create(apriori.Key, new Probability(probability));
                 }
-            }
-
-            double negativeProbability = 0.0;
-            Probability negativeAprioriProbability;
-            if (aprioriProbability.TryGetValue(WordCategory.Negative, out negativeAprioriProbability))
-            {
-                Probability negativePrioriProbability;
-                if (prioriProbability.TryGetValue(WordCategory.Negative, out negativePrioriProbability))
-                {
-                    negativeProbability = (negativeAprioriProbability * negativePrioriProbability).Value;
-                }
-            }
-
-            return new Sentence(parameter, (positiveAprioriProbability >= negativeAprioriProbability) ? WordCategory.Positive : WordCategory.Negative);
+                return Tuple.Create(apriori.Key, new Probability(-1));
+            });
+            return new Sentence(parameter, res.MaxBy(x => x.Item2).Item1);
         }
 
 
-        public ImmutableDictionary<WordCategory, Probability> GetPrioriProbability(IEnumerable<string> words, int quantity)
+        public ImmutableDictionary<WordCategory, Probability> GetPrioriProbability(IEnumerable<WordCategory> categories, IEnumerable<string> words, int quantity)
         {
-            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(word, quantity)).Where(x => Math.Abs(x.Value) < Epsilon).ToList();
-            var negativeProbability = prob.Where(x => x.Key == WordCategory.Negative)
-                .Aggregate(new Probability(1.0d), (acc, x) => x.Value * acc);
-            var positiveProbability = prob.Where(x => x.Key == WordCategory.Positive)
-                .Aggregate(new Probability(1.0d), (acc, x) => x.Value * acc);
-            return ImmutableDictionary<WordCategory, Probability>.Empty.Add(WordCategory.Positive, positiveProbability).Add(WordCategory.Negative, negativeProbability);
+            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(categories, word, quantity)).Where(x => Math.Abs(x.Value) < Epsilon).ToList();
+            return categories.Select(category =>
+            {
+                var res = prob.Where(x => x.Key == category)
+                    .Aggregate(new Probability(1.0d), (acc, x) => x.Value * acc);
+                return new KeyValuePair<WordCategory, Probability>(category, res);
+            }).ToImmutableDictionary();
         }
-        public IEnumerable<KeyValuePair<WordCategory, Probability>> GetPrioriProbabilityForSingleWord(string word, int quantity)
+        public IEnumerable<KeyValuePair<WordCategory, Probability>> GetPrioriProbabilityForSingleWord(IEnumerable<WordCategory> categories,  string word, int quantity)
         {
-            var categories = _learnerState.CategoryPerQuantity.Keys;
             return categories.Select(category =>
             {
                 ImmutableDictionary<string, int> wordPerQuantity;
@@ -75,9 +72,9 @@ namespace Bayes.Classifiers.Implementations
             });
         }
 
-        public ImmutableDictionary<WordCategory, Probability> GetAprioriProbability(int allElementsQuantity)
+        public ImmutableDictionary<WordCategory, Probability> GetAprioriProbability(IEnumerable<WordCategory> categories, int allElementsQuantity)
         {
-            return _learnerState.CategoryPerQuantity.Keys.Select(key =>
+            return categories.Select(key =>
             {
                 int count = _learnerState.CategoryPerQuantity.GetValueOrDefault(key);
                 return new KeyValuePair<WordCategory, Probability>(key, new Probability((double)count / allElementsQuantity));
