@@ -21,7 +21,7 @@ namespace Bayes.Tests.Learners
             int count;
             if (testResult.CategoryPerQuantity.TryGetValue(category, out count))
             {
-                count.Should().Be(1);
+                count.Should().Be(feature.Tokenize().Count());
             }
 
             testResult.WordPerQuantity.Count.Should().Be(classification.Text.Tokenize().Count());
