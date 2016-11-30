@@ -1,7 +1,7 @@
 ﻿namespace Bayes.Classifiers.Interfaces
 {
-    public interface IClassifier<in TIn, out TOut>
+    public interface IClassifier<out TScore, in TParameter>
     {
-        TOut Classify(TIn source);
+        TScore Classify(TParameter parameter);
     }
 }

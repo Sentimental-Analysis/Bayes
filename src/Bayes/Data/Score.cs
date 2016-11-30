@@ -2,7 +2,14 @@
 {
     public class Score
     {
-        public string Word { get; set; }
-        public short Result { get; set; }
+        public Sentence Sentence { get; }
+
+        public Probability Probability { get; }
+
+        public Score(Sentence sentence, Probability probability)
+        {
+            Sentence = sentence;
+            Probability = probability;
+        }
     }
 }
