@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Bayes.Data
 {
@@ -51,6 +52,59 @@ namespace Bayes.Data
             else
             {
                 wordPerQuantity = wordPerQuantity.Add(feature, 1);
+            }
+
+            return new LearnerState(CategoryPerQuantity, wordPerQuantity, categoryPerWords);
+        }
+
+        public LearnerState DecrementFeature(WordCategory category, string feature)
+        {
+            var wordPerQuantity = WordPerQuantity;
+            var categoryPerWords = CategoryPerWords;
+            ImmutableDictionary<string, int> features;
+            if (categoryPerWords.TryGetValue(category, out features))
+            {
+                int count;
+                if (features.TryGetValue(feature, out count))
+                {
+                    if (count == 1)
+                    {
+                        categoryPerWords = categoryPerWords.SetItem(category, features.Remove(feature));
+                    }
+                    else if (count == 0)
+                    {
+                        categoryPerWords = categoryPerWords.Remove(category);
+                    }
+                    else
+                    {
+                        categoryPerWords = categoryPerWords.SetItem(category, features.SetItem(feature, count - 1));
+                    }
+                }
+                else
+                {
+                    return this;
+                }
+            }
+            else
+            {
+                return this;
+            }
+
+            int totalCount;
+            if (wordPerQuantity.TryGetValue(feature, out totalCount))
+            {
+                if (totalCount == 1)
+                {
+                    wordPerQuantity = wordPerQuantity.Remove(feature);
+                }
+                else
+                {
+                    wordPerQuantity = wordPerQuantity.SetItem(feature, totalCount - 1);
+                }
+            }
+            else
+            {
+                return this;
             }
 
             return new LearnerState(CategoryPerQuantity, wordPerQuantity, categoryPerWords);
