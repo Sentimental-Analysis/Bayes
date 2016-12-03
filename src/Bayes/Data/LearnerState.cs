@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Bayes.Data
 {
-    public class LearnerState
+    public sealed class LearnerState
     {
         public ImmutableDictionary<WordCategory, int> CategoryPerQuantity { get; }
         public ImmutableDictionary<string, int> WordPerQuantity { get; }
@@ -69,6 +69,30 @@ namespace Bayes.Data
                 totalCategory = totalCategory.Add(category, 1);
             }
             return new LearnerState(totalCategory, WordPerQuantity, CategoryPerWords);
+        }
+
+        private bool Equals(LearnerState other)
+        {
+            return Equals(CategoryPerQuantity, other.CategoryPerQuantity) && Equals(WordPerQuantity, other.WordPerQuantity) && Equals(CategoryPerWords, other.CategoryPerWords);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((LearnerState) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = CategoryPerQuantity?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ (WordPerQuantity?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (CategoryPerWords?.GetHashCode() ?? 0);
+                return hashCode;
+            }
         }
     }
 }
