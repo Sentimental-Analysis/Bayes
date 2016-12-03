@@ -24,6 +24,16 @@
             return Equals((Sentence) obj);
         }
 
+        public static bool operator ==(Sentence sentence, Sentence sentence1)
+        {
+            return sentence != null && sentence.Equals(sentence1);
+        }
+
+        public static bool operator !=(Sentence sentence, Sentence sentence1)
+        {
+            return !(sentence == sentence1);
+        }
+
         public override int GetHashCode()
         {
             unchecked

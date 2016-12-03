@@ -1,4 +1,6 @@
-﻿namespace Bayes.Data
+﻿using System;
+
+namespace Bayes.Data
 {
     public struct Probability
     {
@@ -17,5 +19,50 @@
             return new Probability(probability1.Value * probability2.Value);
         }
 
+        public static bool operator ==(Probability probability, Probability probability1)
+        {
+            return Math.Abs(probability.Value - probability1.Value) < double.Epsilon;
+        }
+
+        public static bool operator !=(Probability probability, Probability probability1)
+        {
+            return !(probability == probability1);
+        }
+
+        public static bool operator >(Probability probability, Probability probability1)
+        {
+            return probability.Value > probability1.Value;
+        }
+
+        public static bool operator <(Probability probability, Probability probability1)
+        {
+            return probability.Value < probability1.Value;
+        }
+
+        public static bool operator >=(Probability probability, Probability probability1)
+        {
+            return probability.Value >= probability1.Value;
+        }
+
+        public static bool operator <=(Probability probability, Probability probability1)
+        {
+            return probability.Value <= probability1.Value;
+        }
+
+        public bool Equals(Probability other)
+        {
+            return Value.Equals(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is Probability && Equals((Probability) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
     }
 }
