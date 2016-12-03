@@ -9,7 +9,7 @@ using static System.Double;
 
 namespace Bayes.Classifiers.Implementations
 {
-    public class TweetClassifier : IClassifier<Score, string>
+    public class TweetClassifier : ITweetClassifier
     {
         private readonly LearnerState _learnerState;
 

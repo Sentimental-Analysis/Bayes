@@ -20,12 +20,42 @@ namespace Bayes.Tests.Model
         [Theory]
         [InlineData(WordCategory.Negative)]
         [InlineData(WordCategory.Positive)]
+        public void Test_DecrementCategory_Method_When_No_Exist_In_Dict(WordCategory testCategory)
+        {
+            var analysisResult = LearnerState.Empty;
+            var testResult = analysisResult.DecrementCategory(testCategory);
+            testResult.CategoryPerQuantity.ContainsKey(testCategory).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative)]
+        [InlineData(WordCategory.Positive)]
         public void Test_Increment_Category_Method_When_Exist_In_Dict(WordCategory testCategory)
         {
             var analysisResult = LearnerState.Empty;
             var testResult = analysisResult.IncrementCategory(testCategory).IncrementCategory(testCategory);
-            int count;
             testResult.CategoryPerQuantity.GetValueOrDefault(testCategory).Should().Be(2);
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative)]
+        [InlineData(WordCategory.Positive)]
+        public void Test_Decrement_Category_Method_When_Exist_In_Dict_But_Count_Is_1(WordCategory testCategory)
+        {
+            var analysisResult = LearnerState.Empty;
+            var testResult = analysisResult.IncrementCategory(testCategory).DecrementCategory(testCategory);
+            testResult.CategoryPerQuantity.ContainsKey(testCategory).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative)]
+        [InlineData(WordCategory.Positive)]
+        public void Test_Decrement_Category_Method_When_Exist_In_Dict_And_Count_Is_2(WordCategory testCategory)
+        {
+            var analysisResult = LearnerState.Empty;
+            var testResult = analysisResult.IncrementCategory(testCategory).IncrementCategory(testCategory).DecrementCategory(testCategory);
+            testResult.CategoryPerQuantity.ContainsKey(testCategory).Should().BeTrue();
+            testResult.CategoryPerQuantity.GetValueOrDefault(testCategory).Should().Be(1);
         }
 
         [Theory]
@@ -47,6 +77,17 @@ namespace Bayes.Tests.Model
                     featuresQuantity.Should().Be(1);
                 }
             }
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative, "hate")]
+        [InlineData(WordCategory.Positive, "happy")]
+        public void Test_Decrement_Feature_Method_When_Category_No_Exist_In_Dict(WordCategory testCategory, string feature)
+        {
+            var analysisResult = LearnerState.Empty;
+            var testResult = analysisResult.DecrementFeature(testCategory, feature);
+            testResult.WordPerQuantity.ContainsKey(feature).Should().BeFalse();
+            testResult.CategoryPerWords.ContainsKey(testCategory).Should().BeFalse();
         }
 
         [Theory]
@@ -76,6 +117,17 @@ namespace Bayes.Tests.Model
         [Theory]
         [InlineData(WordCategory.Negative, "hate")]
         [InlineData(WordCategory.Positive, "happy")]
+        public void Test_Decrement_Feature_Method_When_Category_Exist_In_Dict_But_Feature_No(WordCategory testCategory, string feature)
+        {
+            var analysisResult = LearnerState.Empty.IncrementFeature(testCategory, "");
+            var testResult = analysisResult.DecrementFeature(testCategory, feature);
+            testResult.CategoryPerWords.ContainsKey(testCategory).Should().BeTrue();
+            testResult.WordPerQuantity.ContainsKey(feature).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative, "hate")]
+        [InlineData(WordCategory.Positive, "happy")]
         public void Test_Increment_Feature_Method_When_Category_And_Feature_Exist(WordCategory testCategory, string feature)
         {
             var analysisResult = LearnerState.Empty;
@@ -95,6 +147,29 @@ namespace Bayes.Tests.Model
                     featuresQuantity.Should().Be(2);
                 }
             }
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative, "hate")]
+        [InlineData(WordCategory.Positive, "happy")]
+        public void Test_Decrement_Feature_Method_When_Category_Exist_In_Dict_And_Feature_Exist_And_Feature_Count_Is_1(WordCategory testCategory, string feature)
+        {
+            var analysisResult = LearnerState.Empty.IncrementFeature(testCategory, feature);
+            var testResult = analysisResult.DecrementFeature(testCategory, feature);
+            testResult.CategoryPerWords.ContainsKey(testCategory).Should().BeFalse();
+            testResult.WordPerQuantity.ContainsKey(feature).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(WordCategory.Negative, "hate")]
+        [InlineData(WordCategory.Positive, "happy")]
+        public void Test_Decrement_Feature_Method_When_Category_Exist_In_Dict_And_Feature_Exist_And_Feature_Count_Is_Greater_Than_1(WordCategory testCategory, string feature)
+        {
+            var analysisResult = LearnerState.Empty.IncrementFeature(testCategory, feature).IncrementFeature(testCategory, feature);
+            var testResult = analysisResult.DecrementFeature(testCategory, feature);
+            testResult.CategoryPerWords.ContainsKey(testCategory).Should().BeTrue();
+            testResult.WordPerQuantity.ContainsKey(feature).Should().BeTrue();
+            testResult.WordPerQuantity.GetValueOrDefault(feature).Should().Be(1);
         }
     }
 }

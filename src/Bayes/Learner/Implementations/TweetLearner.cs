@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Bayes.Learner.Implementations
 {
-    public class TweetLearner : ILearner<LearnerState, Sentence>
+    public class TweetLearner : ITweetLearner
     {
         public LearnerState Learn(LearnerState oldState, Sentence source)
         {
