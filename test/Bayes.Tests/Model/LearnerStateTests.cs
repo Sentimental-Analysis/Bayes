@@ -52,27 +52,6 @@ namespace Bayes.Tests.Model
         [Theory]
         [InlineData(WordCategory.Negative, "hate")]
         [InlineData(WordCategory.Positive, "happy")]
-        public void Test_Decrement_Feature_Method_When_Category_No_Exist_In_Dict(WordCategory testCategory, string feature)
-        {
-            var analysisResult = LearnerState.Empty;
-            var testResult = analysisResult.IncrementFeature(testCategory, feature);
-            int count;
-            testResult.WordPerQuantity.GetValueOrDefault(feature).Should().Be(1);
-
-            ImmutableDictionary<string, int> features;
-            if (testResult.CategoryPerWords.TryGetValue(testCategory, out features))
-            {
-                int featuresQuantity;
-                if (features.TryGetValue(feature, out featuresQuantity))
-                {
-                    featuresQuantity.Should().Be(1);
-                }
-            }
-        }
-
-        [Theory]
-        [InlineData(WordCategory.Negative, "hate")]
-        [InlineData(WordCategory.Positive, "happy")]
         public void Test_Increment_Feature_Method_When_Category_Exist_In_Dict_But_Feature_No(WordCategory testCategory, string feature)
         {
             var analysisResult = LearnerState.Empty;
