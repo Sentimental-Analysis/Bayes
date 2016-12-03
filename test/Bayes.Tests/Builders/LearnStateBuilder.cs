@@ -1,8 +1,8 @@
-﻿using System.Collections.Immutable;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Bayes.Data;
 using Bayes.Learner.Implementations;
-using Bayes.Utils;
+using Bayes.Learner.Interfaces;
 
 namespace Bayes.Tests.Builders
 {
@@ -10,22 +10,25 @@ namespace Bayes.Tests.Builders
     {
 
         private LearnerState _learnerState;
+        private readonly ITweetLearner _learner;
+
+        public LearnStateBuilder LearnState => new LearnStateBuilder();
 
         public LearnStateBuilder()
         {
             _learnerState = LearnerState.Empty;
+            _learner = new TweetLearner();
         }
 
-        public LearnStateBuilder WithLearnData(ImmutableDictionary<string, int> words)
+        public LearnStateBuilder WithLearnData(IEnumerable<Sentence> sentences)
         {
-            _learnerState = Learning.FromDictionary(words);
+            _learnerState = sentences.Aggregate(_learnerState, (acc, x) => _learner.Learn(acc, x));
             return this;
         }
 
         public LearnStateBuilder WithLearnData(Sentence sentence)
         {
-            var learner = new TweetLearner();
-            _learnerState = learner.Learn(_learnerState, sentence);
+            _learnerState = _learner.Learn(_learnerState, sentence);
             return this;
         }
 

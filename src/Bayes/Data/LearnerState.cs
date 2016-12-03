@@ -66,18 +66,7 @@ namespace Bayes.Data
                 int count;
                 if (features.TryGetValue(feature, out count))
                 {
-                    if (count == 1)
-                    {
-                        categoryPerWords = categoryPerWords.SetItem(category, features.Remove(feature));
-                    }
-                    else if (count == 0)
-                    {
-                        categoryPerWords = categoryPerWords.Remove(category);
-                    }
-                    else
-                    {
-                        categoryPerWords = categoryPerWords.SetItem(category, features.SetItem(feature, count - 1));
-                    }
+                    categoryPerWords = categoryPerWords.SetItem(category, count == 1 ? features.Remove(feature) : features.SetItem(feature, count - 1));
                 }
                 else
                 {
@@ -92,14 +81,7 @@ namespace Bayes.Data
             int totalCount;
             if (wordPerQuantity.TryGetValue(feature, out totalCount))
             {
-                if (totalCount == 1)
-                {
-                    wordPerQuantity = wordPerQuantity.Remove(feature);
-                }
-                else
-                {
-                    wordPerQuantity = wordPerQuantity.SetItem(feature, totalCount - 1);
-                }
+                wordPerQuantity = totalCount == 1 ? wordPerQuantity.Remove(feature) : wordPerQuantity.SetItem(feature, totalCount - 1);
             }
             else
             {
