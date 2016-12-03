@@ -18,7 +18,10 @@ namespace Bayes.Data
             CategoryPerWords = categoryPerWords;
         }
 
-        public static LearnerState Empty => new LearnerState(ImmutableDictionary<WordCategory, int>.Empty, ImmutableDictionary<string, int>.Empty, ImmutableDictionary<WordCategory, ImmutableDictionary<string, int>>.Empty);
+        public static LearnerState Empty
+            =>
+            new LearnerState(ImmutableDictionary<WordCategory, int>.Empty, ImmutableDictionary<string, int>.Empty,
+                ImmutableDictionary<WordCategory, ImmutableDictionary<string, int>>.Empty);
 
         public LearnerState IncrementFeature(WordCategory category, string feature)
         {
@@ -40,7 +43,8 @@ namespace Bayes.Data
             }
             else
             {
-                categoryPerWords = categoryPerWords.Add(category, new Dictionary<string, int>() { { feature, 1 } }.ToImmutableDictionary());
+                categoryPerWords = categoryPerWords.Add(category,
+                    new Dictionary<string, int>() {{feature, 1}}.ToImmutableDictionary());
             }
 
             int totalCount;
@@ -66,7 +70,8 @@ namespace Bayes.Data
                 int count;
                 if (features.TryGetValue(feature, out count))
                 {
-                    categoryPerWords = categoryPerWords.SetItem(category, count == 1 ? features.Remove(feature) : features.SetItem(feature, count - 1));
+                    categoryPerWords = categoryPerWords.SetItem(category,
+                        count == 1 ? features.Remove(feature) : features.SetItem(feature, count - 1));
                 }
                 else
                 {
@@ -78,10 +83,20 @@ namespace Bayes.Data
                 return this;
             }
 
+            if (categoryPerWords.TryGetValue(category, out features))
+            {
+                if (features.IsEmpty)
+                {
+                    categoryPerWords = categoryPerWords.Remove(category);
+                }
+            }
+
             int totalCount;
             if (wordPerQuantity.TryGetValue(feature, out totalCount))
             {
-                wordPerQuantity = totalCount == 1 ? wordPerQuantity.Remove(feature) : wordPerQuantity.SetItem(feature, totalCount - 1);
+                wordPerQuantity = totalCount == 1
+                    ? wordPerQuantity.Remove(feature)
+                    : wordPerQuantity.SetItem(feature, totalCount - 1);
             }
             else
             {
@@ -106,9 +121,33 @@ namespace Bayes.Data
             return new LearnerState(totalCategory, WordPerQuantity, CategoryPerWords);
         }
 
+        public LearnerState DecrementCategory(WordCategory category)
+        {
+            var totalCategory = CategoryPerQuantity;
+            int count;
+            if (totalCategory.TryGetValue(category, out count))
+            {
+                if (count == 1)
+                {
+                    totalCategory = totalCategory.Remove(category);
+                }
+                else
+                {
+                    totalCategory = totalCategory.SetItem(category, count - 1);
+                }
+            }
+            else
+            {
+                return this;
+            }
+
+            return new LearnerState(totalCategory, WordPerQuantity, CategoryPerWords);
+        }
+
         private bool Equals(LearnerState other)
         {
-            return Equals(CategoryPerQuantity, other.CategoryPerQuantity) && Equals(WordPerQuantity, other.WordPerQuantity) && Equals(CategoryPerWords, other.CategoryPerWords);
+            return Equals(CategoryPerQuantity, other.CategoryPerQuantity) &&
+                   Equals(WordPerQuantity, other.WordPerQuantity) && Equals(CategoryPerWords, other.CategoryPerWords);
         }
 
         public override bool Equals(object obj)
