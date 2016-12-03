@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Bayes.Data
 {
