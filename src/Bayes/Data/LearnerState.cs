@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
+using Bayes.Builders;
 
 namespace Bayes.Data
 {
     public sealed class LearnerState
     {
+        public LearnerStateBuilder Builder => new LearnerStateBuilder(this);
         public ImmutableDictionary<WordCategory, int> CategoryPerQuantity { get; }
         public ImmutableDictionary<string, int> WordPerQuantity { get; }
         public ImmutableDictionary<WordCategory, ImmutableDictionary<string, int>> CategoryPerWords { get; }
@@ -169,34 +168,6 @@ namespace Bayes.Data
                 hashCode = (hashCode * 397) ^ (WordPerQuantity?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (CategoryPerWords?.GetHashCode() ?? 0);
                 return hashCode;
-            }
-        }
-
-        public LearnerStateBuilder Builder => new LearnerStateBuilder(this);
-
-        public sealed class LearnerStateBuilder
-        {
-            public Dictionary<WordCategory, int> CategoryPerQuantity { get; set; }
-            public Dictionary<string, int> WordPerQuantity { get; set; }
-            public Dictionary<WordCategory, Dictionary<string, int>> CategoryPerWords { get; set; }
-
-
-            public LearneStateBuilder(LearnerState state)
-            {
-                CategoryPerQuantity = state.CategoryPerQuantity.ToDictionary(x => x.Key, x => x.Value);
-                WordPerQuantity = state.WordPerQuantity.ToDictionary(x => x.Key, x => x.Value);
-                CategoryPerWords = state.CategoryPerWords.ToDictionary(x => x.Key,
-                    x => x.Value.ToDictionary(y => y.Key, y => y.Value));
-            }
-
-            public LearnerState Buid()
-            {
-                var categoryPerQuantity = CategoryPerQuantity.ToImmutableDictionary();
-                var wordPerQuantity = WordPerQuantity.ToImmutableDictionary();
-                var categoryPerWords = CategoryPerWords.ToImmutableDictionary(x => x.Key,
-                    x => x.Value.ToImmutableDictionary());
-
-                return new LearnerState(categoryPerQuantity, wordPerQuantity, categoryPerWords);
             }
         }
     }

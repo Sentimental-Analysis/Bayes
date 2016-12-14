@@ -11,6 +11,10 @@ namespace Bayes.Builders
         public Dictionary<string, int> WordPerQuantity { get; set; }
         public Dictionary<WordCategory, Dictionary<string, int>> CategoryPerWords { get; set; }
 
+        public LearnerStateBuilder()
+        {
+
+        }
 
         public LearnerStateBuilder(LearnerState state)
         {
