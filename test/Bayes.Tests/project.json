@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "System.Runtime.Serialization.Primitives": "4.3.0",
-    "Bayes": "1.0.3-*",
+    "Bayes": "1.0.4-*",
     "FluentAssertions": "4.17.0",
     "xunit": "2.2.0-beta4-build3444",
     "dotnet-test-xunit": "2.2.0-preview2-build1029"

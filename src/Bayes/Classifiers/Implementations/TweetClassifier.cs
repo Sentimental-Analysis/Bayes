@@ -11,20 +11,13 @@ namespace Bayes.Classifiers.Implementations
 {
     public class TweetClassifier : ITweetClassifier
     {
-        private readonly LearnerState _learnerState;
-
-        public TweetClassifier(LearnerState learnerState)
-        {
-            _learnerState = learnerState;
-        }
-
-        public Score Classify(string parameter)
+        public Score Classify(string parameter, LearnerState learnerState)
         {
             var words = parameter.Tokenize();
-            int allElementsQuantity = _learnerState.CategoryPerQuantity.Select(x => x.Value).Sum();
-            var keys = _learnerState.CategoryPerQuantity.Keys.ToList();
-            var aprioriProbability = GetAprioriProbability(keys, allElementsQuantity);
-            var prioriProbability = GetPrioriProbability(keys, words, allElementsQuantity);
+            int allElementsQuantity = learnerState.CategoryPerQuantity.Select(x => x.Value).Sum();
+            var keys = learnerState.CategoryPerQuantity.Keys.ToList();
+            var aprioriProbability = GetAprioriProbability(keys, allElementsQuantity, learnerState);
+            var prioriProbability = GetPrioriProbability(keys, words, allElementsQuantity, learnerState);
 
             var res = aprioriProbability.Zip(prioriProbability, (apriori, priori) =>
             {
@@ -48,9 +41,9 @@ namespace Bayes.Classifiers.Implementations
         }
 
 
-        public ImmutableDictionary<WordCategory, Probability> GetPrioriProbability(IEnumerable<WordCategory> categories, IEnumerable<string> words, int quantity)
+        public ImmutableDictionary<WordCategory, Probability> GetPrioriProbability(IEnumerable<WordCategory> categories, IEnumerable<string> words, int quantity, LearnerState learnerState)
         {
-            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(categories, word, quantity)).Where(x => !(Math.Abs(x.Value) < Epsilon)).ToList();
+            var prob = words.SelectMany(word => GetPrioriProbabilityForSingleWord(categories, word, quantity, learnerState)).Where(x => !(Math.Abs(x.Value) < Epsilon)).ToList();
             return categories.Select(category =>
             {
                 var res = prob.Where(x => x.Key == category)
@@ -58,12 +51,13 @@ namespace Bayes.Classifiers.Implementations
                 return new KeyValuePair<WordCategory, Probability>(category, new Probability(Math.Abs(res.Value - 1.0d) < Epsilon ? 0.0d : res.Value));
             }).ToImmutableDictionary();
         }
-        public IEnumerable<KeyValuePair<WordCategory, Probability>> GetPrioriProbabilityForSingleWord(IEnumerable<WordCategory> categories,  string word, int quantity)
+
+        public IEnumerable<KeyValuePair<WordCategory, Probability>> GetPrioriProbabilityForSingleWord(IEnumerable<WordCategory> categories,  string word, int quantity, LearnerState learnerState)
         {
             return categories.Select(category =>
             {
                 ImmutableDictionary<string, int> wordPerQuantity;
-                if (_learnerState.CategoryPerWords.TryGetValue(category, out wordPerQuantity))
+                if (learnerState.CategoryPerWords.TryGetValue(category, out wordPerQuantity))
                 {
                     int count = wordPerQuantity.GetValueOrDefault(word);
                     return new KeyValuePair<WordCategory, Probability>(category, new Probability((double)count / quantity));
@@ -72,11 +66,11 @@ namespace Bayes.Classifiers.Implementations
             });
         }
 
-        public ImmutableDictionary<WordCategory, Probability> GetAprioriProbability(IEnumerable<WordCategory> categories, int allElementsQuantity)
+        public ImmutableDictionary<WordCategory, Probability> GetAprioriProbability(IEnumerable<WordCategory> categories, int allElementsQuantity, LearnerState learnerState)
         {
             return categories.Select(key =>
             {
-                int count = _learnerState.CategoryPerQuantity.GetValueOrDefault(key);
+                int count = learnerState.CategoryPerQuantity.GetValueOrDefault(key);
                 return new KeyValuePair<WordCategory, Probability>(key, new Probability((double)count / allElementsQuantity));
             }).ToImmutableDictionary();
         }

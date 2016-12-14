@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using Bayes.Builders;
 
 namespace Bayes.Data
 {
     public sealed class LearnerState
     {
+        public LearnerStateBuilder Builder => new LearnerStateBuilder(this);
         public ImmutableDictionary<WordCategory, int> CategoryPerQuantity { get; }
         public ImmutableDictionary<string, int> WordPerQuantity { get; }
         public ImmutableDictionary<WordCategory, ImmutableDictionary<string, int>> CategoryPerWords { get; }

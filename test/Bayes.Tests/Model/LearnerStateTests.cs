@@ -65,7 +65,6 @@ namespace Bayes.Tests.Model
         {
             var analysisResult = LearnerState.Empty;
             var testResult = analysisResult.IncrementFeature(testCategory, feature);
-            int count;
             testResult.WordPerQuantity.GetValueOrDefault(feature).Should().Be(1);
 
             ImmutableDictionary<string, int> features;

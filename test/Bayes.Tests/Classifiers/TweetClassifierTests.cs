@@ -16,8 +16,8 @@ namespace Bayes.Tests.Classifiers
             var learner = new TweetLearner();
             var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
-            var classifier = new TweetClassifier(testLearner);
-            var testResult = classifier.Classify("My brother hate java");
+            var classifier = new TweetClassifier();
+            var testResult = classifier.Classify("My brother hate java", testLearner);
             testResult.Sentence.Category.Should().Be(WordCategory.Negative);
         }
 
@@ -30,8 +30,8 @@ namespace Bayes.Tests.Classifiers
             var learner = new TweetLearner();
             var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
-            var classifier = new TweetClassifier(testLearner);
-            var testResult = classifier.Classify("My brother love F#");
+            var classifier = new TweetClassifier();
+            var testResult = classifier.Classify("My brother love F#", testLearner);
             testResult.Sentence.Category.Should().Be(WordCategory.Positive);
         }
 
@@ -43,8 +43,8 @@ namespace Bayes.Tests.Classifiers
             var learner = new TweetLearner();
             var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
-            var classifier = new TweetClassifier(testLearner);
-            var testResult = classifier.Classify("today is a sunny day");
+            var classifier = new TweetClassifier();
+            var testResult = classifier.Classify("today is a sunny day", testLearner);
             testResult.Sentence.Category.Should().Be(WordCategory.Positive);
         }
 
@@ -56,8 +56,8 @@ namespace Bayes.Tests.Classifiers
             var learner = new TweetLearner();
             var learnLove = learner.Learn(LearnerState.Empty, new Sentence(positiveText, WordCategory.Positive));
             var testLearner = learner.Learn(learnLove, new Sentence(negativeText, WordCategory.Negative));
-            var classifier = new TweetClassifier(testLearner);
-            var testResult = classifier.Classify("there will be rain");
+            var classifier = new TweetClassifier();
+            var testResult = classifier.Classify("there will be rain", testLearner);
             testResult.Sentence.Category.Should().Be(WordCategory.Negative);
         }
     }
