@@ -7,9 +7,9 @@ namespace Bayes.Builders
 {
     public sealed class LearnerStateBuilder : IBuilder<LearnerState>
     {
-        public Dictionary<WordCategory, int> CategoryPerQuantity { get; set; }
-        public Dictionary<string, int> WordPerQuantity { get; set; }
-        public Dictionary<WordCategory, Dictionary<string, int>> CategoryPerWords { get; set; }
+        public Dictionary<WordCategory, int> CategoryPerQuantity { get; set; } = new Dictionary<WordCategory, int>();
+        public Dictionary<string, int> WordPerQuantity { get; set; } = new Dictionary<string, int>();
+        public Dictionary<WordCategory, Dictionary<string, int>> CategoryPerWords { get; set; } = new Dictionary<WordCategory, Dictionary<string, int>>();
 
         public LearnerStateBuilder()
         {
