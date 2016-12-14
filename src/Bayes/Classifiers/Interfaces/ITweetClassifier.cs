@@ -2,7 +2,7 @@
 
 namespace Bayes.Classifiers.Interfaces
 {
-    public interface ITweetClassifier: IClassifier<Score, string>
+    public interface ITweetClassifier: IClassifier<Score, string, LearnerState>
     {
 
     }
